@@ -6,6 +6,10 @@ import PostDetailView from '@/views/posts/PostDetailView.vue';
 import PostListView from '@/views/posts/PostListView.vue';
 import PostEditView from '@/views/posts/PostEditView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
+import NestedView from '@/views/nested/NestedView.vue';
+import NestedOneView from '@/views/nested/NestedOneView.vue';
+import NestedTwoView from '@/views/nested/NestedTwoView.vue';
+import NestedHomeView from '@/views/nested/NestedHomeView.vue';
 
 const routes = [
 	{
@@ -40,7 +44,31 @@ const routes = [
 		name: 'PostEdit',
 		component: PostEditView,
 	},
+	// '/:pathMatch(.*)*' - 위의 어떤 경로와도 매칭되지 않은 경우 NotFoundView로 이동
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
+	{
+		path: '/nested',
+		name: 'Nested',
+		component: NestedView,
+		children: [
+			{
+				path: '',
+				name: 'NestedHome',
+				component: NestedHomeView,
+			},
+			{
+				// path: '/one' - one 앞에 / 넣으면 안된다, / 넣으면 절대경로가 되어버린다
+				path: 'one',
+				name: 'NestedOne',
+				component: NestedOneView,
+			},
+			{
+				path: 'two',
+				name: 'NestedTwo',
+				component: NestedTwoView,
+			},
+		],
+	},
 ];
 
 const router = createRouter({
