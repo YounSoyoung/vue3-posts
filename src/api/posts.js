@@ -14,6 +14,5 @@ export function getPosts() {
 // PostDetailView.vue의 파라미터 id는 String으로 반환이된다.
 // 타입을 int로 바꿔준다.
 export function getPostById(id) {
-	const numberId = parseInt(id);
-	return posts.find(item => item.id === numberId);
+	return posts.find(item => item.id === id);
 }
