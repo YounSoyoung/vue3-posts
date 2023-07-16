@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<h2>{{ form.title }}</h2>
-		<p>{{ form.content }}</p>
-		<p class="text-muted">{{ form.createdAt }}</p>
+		<h2>{{ post.title }}</h2>
+		<p>{{ post.content }}</p>
+		<p class="text-muted">{{ post.createdAt }}</p>
 		<hr class="my-4" />
 		<div class="row g-2">
 			<div class="col-auto">
@@ -21,7 +21,7 @@
 				</button>
 			</div>
 			<div class="col-auto">
-				<button class="btn btn-outline-danger">삭제</button>
+				<button class="btn btn-outline-danger" @click="remove">삭제</button>
 			</div>
 		</div>
 	</div>
@@ -29,7 +29,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { getPostById } from '@/api/posts';
+import { getPostById, deletePost } from '@/api/posts';
 import { ref } from 'vue';
 
 //넘어온 props 정의
@@ -38,28 +38,35 @@ const props = defineProps({
 });
 
 const router = useRouter();
-//url에 입력한 params 중 id 값
-// const id = route.params.id;
-const form = ref({});
-//이전에 반응형 기초를 배울 때 Primitive type(string, number...)은 ref로 선언
-//배열이나 객체는 reactive() 함수를 사용했다
 
-/**
- * ref
- * 장) 객체 할당 가능 (반응형 -> 변경 가능), 일관성 유지(Reference type, Primitive type 둘다 가능)
- * 단) form.value.title, form.value.content -> 너무 길어진다
- *
- * reactive
- * 단) 객체 할당 불가능 (반응형 X -> 객체 안의 속성들을 변경할 수 없다)
- * 장) form.title, form.content -> 비교적 짧다
- */
+const post = ref({});
 
-const fetchPost = () => {
-	const data = getPostById(props.id);
-	// ...을 통해 객체 복사를 하여 form.value에 대입 -> 값의 변동을 막기 위해
-	form.value = { ...data };
+const fetchPost = async () => {
+	try {
+		const { data } = await getPostById(props.id);
+		setPost(data);
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+const setPost = ({ title, content, createdAt }) => {
+	post.value.title = title;
+	post.value.content = content;
+	post.value.createdAt = createdAt;
 };
 fetchPost();
+const remove = async () => {
+	try {
+		if (confirm('삭제 하시겠습니까?') === false) {
+			return;
+		}
+		await deletePost(props.id);
+		router.push({ name: 'PostList' });
+	} catch (error) {
+		console.error(error);
+	}
+};
 
 const goListPage = () => router.push({ name: 'PostList' });
 const goEditPage = () =>

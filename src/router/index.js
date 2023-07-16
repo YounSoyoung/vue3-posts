@@ -77,7 +77,9 @@ const routes = [
 ];
 
 const router = createRouter({
+	// 괄호 안에 값을 넣으면 어떤 경로로 이동하더라도 앞에 '/base'가 붙는다.
 	history: createWebHistory('/'),
+	// history: createWebHashHistory(),
 	routes,
 });
 
