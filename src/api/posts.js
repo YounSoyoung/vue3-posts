@@ -9,8 +9,8 @@ const posts = [
 	{ id: 5, title: '제목5', content: '내용5', createdAt: '2025-01-05' },
 ];
 
-export function getPosts() {
-	return axios.get('http://localhost:5000/posts');
+export function getPosts(params) {
+	return axios.get('http://localhost:5000/posts', { params });
 }
 
 // PostDetailView.vue의 파라미터 id는 String으로 반환이된다.
