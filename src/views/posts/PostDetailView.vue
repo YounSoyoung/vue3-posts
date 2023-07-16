@@ -34,7 +34,7 @@ import { ref } from 'vue';
 
 //넘어온 props 정의
 const props = defineProps({
-	id: Number,
+	id: String,
 });
 
 const router = useRouter();
