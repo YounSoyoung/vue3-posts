@@ -4,11 +4,16 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import globalDirectives from './plugins/global-directives';
+// import focus from './directives/focus';
 // import globalComponents from '@/plugins/global-components';
 
 const app = createApp(App);
 // app.use(globalComponents);
+//v-는 제거하고 바로 'focus'라고 적으면 된다.
+// app.directive('focus', focus);
 app.use(router);
+app.use(globalDirectives);
 app.mount('#app');
 
 import 'bootstrap/dist/js/bootstrap.js';
