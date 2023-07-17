@@ -5,6 +5,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import globalDirectives from './plugins/global-directives';
+import dayjs from './plugins/dayjs';
 // import focus from './directives/focus';
 // import globalComponents from '@/plugins/global-components';
 
@@ -14,6 +15,7 @@ const app = createApp(App);
 // app.directive('focus', focus);
 app.use(router);
 app.use(globalDirectives);
+app.use(dayjs);
 app.mount('#app');
 
 import 'bootstrap/dist/js/bootstrap.js';
