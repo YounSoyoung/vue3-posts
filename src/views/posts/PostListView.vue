@@ -52,9 +52,6 @@ import PostDetailView from './PostDetailView.vue';
 import PostModal from '@/components/posts/PostModal.vue';
 import { getPosts } from '@/api/posts';
 import { useRouter } from 'vue-router';
-import AppCard from '@/components/AppCard.vue';
-import AppPagination from '@/components/AppPagination.vue';
-import AppGrid from '@/components/AppGrid.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
 
 const router = useRouter();

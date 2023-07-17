@@ -4,8 +4,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+// import globalComponents from '@/plugins/global-components';
 
-createApp(App).use(router).mount('#app');
+const app = createApp(App);
+// app.use(globalComponents);
+app.use(router);
+app.mount('#app');
 
 import 'bootstrap/dist/js/bootstrap.js';
 
