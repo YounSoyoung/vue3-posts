@@ -14,7 +14,6 @@ declare module 'vue' {
     AppLoading: typeof import('./src/components/app/AppLoading.vue')['default']
     AppModal: typeof import('./src/components/app/AppModal.vue')['default']
     AppPagination: typeof import('./src/components/app/AppPagination.vue')['default']
-    copy: typeof import('./src/components/app/AppError copy.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -10,6 +10,7 @@
 			{{ $dayjs(post.createdAt).format('YYYY. MM. DD HH:mm:ss') }}
 		</p>
 		<hr class="my-4" />
+		<AppError v-if="removeError" :message="removeError.message" />
 		<div class="row g-2">
 			<div class="col-auto">
 				<button class="btn btn-outline-dark">이전글</button>
@@ -27,7 +28,21 @@
 				</button>
 			</div>
 			<div class="col-auto">
-				<button class="btn btn-outline-danger" @click="remove">삭제</button>
+				<button
+					class="btn btn-outline-danger"
+					@click="remove"
+					:disabled="removeLoading"
+				>
+					<template v-if="removeLoading">
+						<span
+							class="spinner-grow spinner-grow-sm"
+							role="status"
+							aria-hidden="true"
+						></span>
+						<span class="visually-hidden">Loading...</span>
+					</template>
+					<template v-else>삭제</template>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -35,8 +50,10 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { getPostById, deletePost } from '@/api/posts';
+import { deletePost } from '@/api/posts';
 import { ref } from 'vue';
+import { useAlert } from '@/composables/alert';
+import { useAxios } from '@/hooks/useAxios';
 
 //넘어온 props 정의
 const props = defineProps({
@@ -44,43 +61,32 @@ const props = defineProps({
 });
 
 const router = useRouter();
+const { vAlert, vSuccess } = useAlert();
+// const post = ref({
+// 	title: null,
+// 	content: null,
+// 	createdAt: null,
+// });
 
-const post = ref({
-	title: null,
-	content: null,
-	createdAt: null,
-});
+//data 값을 post에 바로 할당한다.
+const { error, loading, data: post } = useAxios(`/posts/${props.id}`);
 
-const error = ref(null);
-const loading = ref(false);
-
-const fetchPost = async () => {
-	try {
-		loading.value = true;
-		const { data } = await getPostById(props.id);
-		setPost(data);
-	} catch (err) {
-		error.value = err;
-	} finally {
-		loading.value = false;
-	}
-};
-
-const setPost = ({ title, content, createdAt }) => {
-	post.value.title = title;
-	post.value.content = content;
-	post.value.createdAt = createdAt;
-};
-fetchPost();
+const removeError = ref(null);
+const removeLoading = ref(false);
 const remove = async () => {
 	try {
 		if (confirm('삭제 하시겠습니까?') === false) {
 			return;
 		}
+		removeLoading.value = true;
 		await deletePost(props.id);
+		vSuccess('삭제가 완료되었습니다.');
 		router.push({ name: 'PostList' });
-	} catch (error) {
-		console.error(error);
+	} catch (err) {
+		vAlert(err.message);
+		removeError.value = err;
+	} finally {
+		removeLoading.value = false;
 	}
 };
 
