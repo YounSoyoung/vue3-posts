@@ -9,7 +9,6 @@ export default {
 		};
 		//person 객체를 어플리케이션 전체에서 사용하고 싶을 때
 		app.config.globalProperties.$person = person;
-
 		app.provide('person', person);
 	},
 };

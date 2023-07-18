@@ -12,10 +12,6 @@ declare module 'vue' {
     AppGrid: typeof import('./src/components/app/AppGrid.vue')['default']
     AppModal: typeof import('./src/components/app/AppModal.vue')['default']
     AppPagination: typeof import('./src/components/app/AppPagination.vue')['default']
-    PostFilter: typeof import('./src/components/posts/PostFilter.vue')['default']
-    PostForm: typeof import('./src/components/posts/PostForm.vue')['default']
-    PostItem: typeof import('./src/components/posts/PostItem.vue')['default']
-    PostModal: typeof import('./src/components/posts/PostModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

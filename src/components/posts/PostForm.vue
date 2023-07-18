@@ -6,7 +6,7 @@
 			<input
 				v-focus
 				:value="title"
-				v-color="'blue'"
+				v-color="'black'"
 				@input="$emit('update:title', $event.target.value)"
 				type="text"
 				class="form-control"
