@@ -62,32 +62,39 @@ const props = defineProps({
 
 const router = useRouter();
 const { vAlert, vSuccess } = useAlert();
+//data 값을 post에 바로 할당한다.
+const { error, loading, data: post } = useAxios(`/posts/${props.id}`);
+
+const {
+	error: removeError,
+	loading: removeLoading,
+	execute,
+} = useAxios(
+	`/posts/${props.id}`,
+	{ method: 'delete' },
+	{
+		immediate: false,
+		onSuccess: () => {
+			vSuccess('삭제가 완료되었습니다.');
+			router.push({ name: 'PostList' });
+		},
+		onError: err => {
+			vAlert(err.message);
+		},
+	},
+);
+
 // const post = ref({
 // 	title: null,
 // 	content: null,
 // 	createdAt: null,
 // });
 
-//data 값을 post에 바로 할당한다.
-const { error, loading, data: post } = useAxios(`/posts/${props.id}`);
-
-const removeError = ref(null);
-const removeLoading = ref(false);
 const remove = async () => {
-	try {
-		if (confirm('삭제 하시겠습니까?') === false) {
-			return;
-		}
-		removeLoading.value = true;
-		await deletePost(props.id);
-		vSuccess('삭제가 완료되었습니다.');
-		router.push({ name: 'PostList' });
-	} catch (err) {
-		vAlert(err.message);
-		removeError.value = err;
-	} finally {
-		removeLoading.value = false;
+	if (confirm('삭제 하시겠습니까?') === false) {
+		return;
 	}
+	execute();
 };
 
 const goListPage = () => router.push({ name: 'PostList' });
