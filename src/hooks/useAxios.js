@@ -9,17 +9,27 @@ const defaultConfig = {
 	method: 'get',
 };
 
+const defaultOptions = {
+	immediate: true,
+};
+
 //config 객체는 구조분해할당을 할 것이기 때문에
 //undefined로 넘어왔을 때는 값을 빈 객체로 선언한다. -> config = {}
 //이렇게 해야 에러가 안난다.
-export const useAxios = (url, config = {}) => {
+//파라미터로 콜백 함수를 받는다. -> options
+export const useAxios = (url, config = {}, options = {}) => {
 	const response = ref(null);
 	const data = ref(null);
 	const error = ref(null);
 	const loading = ref(false);
 
+	//options이라는 객체 안에 onSuccess, onError 함수를 받는다.
+	//onSuccess - 성공했을 때 실행할 콜백함수, onSuccess - 실패했을 때 실행할 함수
+	//{ ...defaultOptions, ...options }; - default로 immediate가 ture였다가 options에서 false가 오면 최종적으로 false가 된다.
+	const { onSuccess, onError, immediate } = { ...defaultOptions, ...options };
+
 	const { params } = config;
-	const execute = () => {
+	const execute = body => {
 		data.value = null;
 		error.value = null;
 		loading.value = true;
@@ -29,14 +39,21 @@ export const useAxios = (url, config = {}) => {
 			...defaultConfig,
 			...config,
 			params: unref(params),
+			data: typeof body === 'object' ? body : {},
 		})
 			.then(res => {
 				response.value = res;
 				console.log('response.value: ', response.value);
 				data.value = res.data;
+				if (onSuccess) {
+					onSuccess(res);
+				}
 			})
 			.catch(err => {
 				error.value = err;
+				if (onError) {
+					onError(err);
+				}
 			})
 			.finally(() => {
 				loading.value = false;
@@ -48,7 +65,10 @@ export const useAxios = (url, config = {}) => {
 	if (isRef(params)) {
 		watchEffect(execute);
 	} else {
-		execute();
+		//immediate이 true일 때 즉시 실행하고 false일 때는 실행 X
+		if (immediate) {
+			execute();
+		}
 	}
 
 	return {
@@ -56,6 +76,7 @@ export const useAxios = (url, config = {}) => {
 		data,
 		error,
 		loading,
+		execute,
 	};
 };
 

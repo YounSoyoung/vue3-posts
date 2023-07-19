@@ -52,40 +52,45 @@ const id = route.params.id;
 
 const { data: form, error, loading } = useAxios(`/posts/${id}`);
 
-const fetchPost = async () => {
-	try {
-		loading.value = true;
-		const { data } = await getPostById(id);
-		setForm(data);
-	} catch (err) {
-		error.value = err;
-	} finally {
-		loading.value = false;
-	}
-};
+//immediate: false이므로 execute를 가져와서 edit 메소드가 호출되는 시점에 form 안에 있는 데이터를 저장한다
+const {
+	error: editError,
+	loading: editLoading,
+	execute,
+} = useAxios(
+	`/posts/${id}`,
+	{ method: 'patch' },
+	{
+		immediate: false,
+		onSuccess: () => {
+			router.push({ name: 'PostDetail', params: { id } });
+			vSuccess('수정이 완료되었습니다!');
+		},
+		onError: err => {
+			vAlert(err.message);
+		},
+	},
+);
 
-const setForm = ({ title, content }) => {
-	form.value.title = title;
-	form.value.content = content;
+const edit = () => {
+	execute({
+		...form.value,
+	});
 };
-fetchPost();
 
 //error, loading은 상태를 가져올 때 이미 정했기 때문에 새로운 것을 만들어준다.
-const editError = ref(null);
-const editLoading = ref(false);
-const edit = async () => {
-	try {
-		editLoading.value = true;
-		await updatePost(id, { ...form.value });
-		router.push({ name: 'PostDetail', params: { id } });
-		vSuccess('수정이 완료되었습니다!');
-	} catch (err) {
-		vAlert(err.message);
-		editError.value = err;
-	} finally {
-		editLoading.value = false;
-	}
-};
+// const editError = ref(null);
+// const editLoading = ref(false);
+// const edit = async () => {
+// 	try {
+// 		editLoading.value = true;
+// 		await updatePost(id, { ...form.value });
+// 	} catch (err) {
+// 		editError.value = err;
+// 	} finally {
+// 		editLoading.value = false;
+// 	}
+// };
 
 const goDetailPage = () => router.push({ name: 'PostDetail', params: { id } });
 </script>
