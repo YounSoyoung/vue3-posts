@@ -5,6 +5,7 @@
 
 	<div v-else>
 		<h2>{{ post.title }}</h2>
+		<p>id: {{ props.id }}, isOdd: {{ isOdd }}</p>
 		<p>{{ post.content }}</p>
 		<p class="text-muted">
 			{{ $dayjs(post.createdAt).format('YYYY. MM. DD HH:mm:ss') }}
@@ -54,6 +55,10 @@ import { deletePost } from '@/api/posts';
 import { ref } from 'vue';
 import { useAlert } from '@/composables/alert';
 import { useAxios } from '@/hooks/useAxios';
+import { computed } from 'vue';
+import { useNumber } from '@/composables/number';
+import { toRef } from 'vue';
+import { toRefs } from 'vue';
 
 //넘어온 props 정의
 const props = defineProps({
@@ -61,9 +66,15 @@ const props = defineProps({
 });
 
 const router = useRouter();
+// const isRef = toRef(props, 'id');
+const { id: isRef } = toRefs(props);
+const { x, y } = useNumber(isRef);
 const { vAlert, vSuccess } = useAlert();
+//url을 반응형으로 넘겨야 버튼을 클릭할 때마다 preview가 바뀐다
+const url = computed(() => `/posts/${props.id}`);
+
 //data 값을 post에 바로 할당한다.
-const { error, loading, data: post } = useAxios(`/posts/${props.id}`);
+const { error, loading, data: post } = useAxios(url);
 
 const {
 	error: removeError,

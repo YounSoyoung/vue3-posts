@@ -35,7 +35,8 @@ export const useAxios = (url, config = {}, options = {}) => {
 		loading.value = true;
 		//axios(config) 또는 axios(url, config)
 		//unref() : 매핑을 해제한다.
-		axios(url, {
+		//url은 반응형 객체이므로 unref()해서 보내야한다.
+		axios(unref(url), {
 			...defaultConfig,
 			...config,
 			params: unref(params),
@@ -62,7 +63,7 @@ export const useAxios = (url, config = {}, options = {}) => {
 
 	//isRef 함수로 정의한 함수라면, watchEffect()로 실행하고
 	//일반 변수라면 execut() 함수를 한번만 호출
-	if (isRef(params)) {
+	if (isRef(params) || isRef(url)) {
 		watchEffect(execute);
 	} else {
 		//immediate이 true일 때 즉시 실행하고 false일 때는 실행 X
