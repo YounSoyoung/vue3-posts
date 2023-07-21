@@ -10,6 +10,7 @@ import NestedView from '@/views/nested/NestedView.vue';
 import NestedOneView from '@/views/nested/NestedOneView.vue';
 import NestedTwoView from '@/views/nested/NestedTwoView.vue';
 import NestedHomeView from '@/views/nested/NestedHomeView.vue';
+import MyPage from '@/views/MyPage.vue';
 
 const routes = [
 	{
@@ -74,6 +75,23 @@ const routes = [
 			},
 		],
 	},
+	{
+		path: '/my',
+		name: 'MyPage',
+		component: MyPage,
+		beforeEnter: (to, from) => {
+			// console.log('to: ', to);
+			// console.log('from: ', from);
+			// return false;
+			// return { name: 'Home' };
+			console.log(to.query);
+			//url에 있는 쿼리 스트링을 잘라낸 후 direction 하기
+			//Object.keys - query 객체 안에 있는 key를 배열로 반환한다.
+			if (Object.keys(to.query).length > 0) {
+				return { path: to.path, query: {} };
+			}
+		},
+	},
 ];
 
 const router = createRouter({
@@ -82,5 +100,16 @@ const router = createRouter({
 	// history: createWebHashHistory(),
 	routes,
 });
+
+// router.beforeEach((to, from) => {
+// 	console.log('to: ', to);
+// 	console.log('from: ', from);
+// 	if (to.name === 'MyPage') {
+// 		// router.push({ name: 'Home' });
+// 		// return false;
+// 		// return { name: 'Home' };
+// 		return '/posts';
+// 	}
+// });
 
 export default router;

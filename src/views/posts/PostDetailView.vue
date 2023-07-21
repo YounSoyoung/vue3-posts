@@ -14,10 +14,14 @@
 		<AppError v-if="removeError" :message="removeError.message" />
 		<div class="row g-2">
 			<div class="col-auto">
-				<button class="btn btn-outline-dark">이전글</button>
+				<button class="btn btn-outline-dark" @click="router.push('/posts/10')">
+					이전글
+				</button>
 			</div>
 			<div class="col-auto">
-				<button class="btn btn-outline-dark">다음글</button>
+				<button class="btn btn-outline-dark" @click="router.push('/posts/11')">
+					다음글
+				</button>
 			</div>
 			<div class="col-auto me-auto"></div>
 			<div class="col-auto">
@@ -50,7 +54,7 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { deletePost } from '@/api/posts';
 import { ref } from 'vue';
 import { useAlert } from '@/composables/alert';
@@ -111,6 +115,20 @@ const remove = async () => {
 const goListPage = () => router.push({ name: 'PostList' });
 const goEditPage = () =>
 	router.push({ name: 'PostEdit', params: { id: props.id } });
+
+onBeforeRouteUpdate(() => {
+	console.log('onBeforeRouteUpdate');
+});
+onBeforeRouteLeave(() => {
+	console.log('onBeforeRouteLeave');
+});
+</script>
+<script>
+export default {
+	beforeRouteEnter() {
+		console.log('beforeRouteEnter');
+	},
+};
 </script>
 
 <style scoped></style>

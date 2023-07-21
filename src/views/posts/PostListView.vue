@@ -5,7 +5,8 @@
 
 		<PostFilter
 			v-model:title="params.title_like"
-			v-model:limit="params._limit"
+			:limit="params._limit"
+			@update:limit="changeLimit"
 		></PostFilter>
 
 		<hr class="my-4" />
@@ -14,8 +15,13 @@
 
 		<AppError v-else-if="error" :message="error.message" />
 
+		<template v-else-if="!isExist">
+			<p class="text-center py-5 text-muted">No Results</p>
+		</template>
+
 		<template v-else>
-			<AppGrid :items="posts">
+			<!-- 기본일 때 사이즈 12, sm 사이즈일 때 6, md 사이즈일 떄 4, lg 사이즈일 떄 3 -->
+			<AppGrid :items="posts" col-class="col-12 col-md-6 col-lg-4">
 				<template v-slot="{ item }">
 					<PostItem
 						:title="item.title"
@@ -72,9 +78,14 @@ const params = ref({
 	_sort: 'createdAt',
 	_order: 'desc',
 	_page: 1,
-	_limit: 3,
+	_limit: 6,
 	title_like: '',
 });
+
+const changeLimit = value => {
+	params.value._limit = value;
+	params.value._page = 1;
+};
 
 const {
 	response,
@@ -82,6 +93,7 @@ const {
 	error,
 	loading,
 } = useAxios('/posts', { params });
+const isExist = computed(() => posts.value && posts.value.length > 0);
 // = useAxios('/posts', { method: 'get', params }); //메소드 get은 자주 사용하기 때문에 default로 설정
 
 //pagination
