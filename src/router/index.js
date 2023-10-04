@@ -64,6 +64,7 @@ const routes = [
 			},
 			{
 				// path: '/one' - one 앞에 / 넣으면 안된다, / 넣으면 절대경로가 되어버린다
+				// -> /을 넣지 않으면 경로가 /nested/one이 되고 /을 넣으면 경로가 /one이 된다.
 				path: 'one',
 				name: 'NestedOne',
 				component: NestedOneView,
